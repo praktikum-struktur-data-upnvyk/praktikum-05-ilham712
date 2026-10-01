@@ -71,21 +71,70 @@ string display(Stack& s) {
 
 // SOAL 1
 bool push(Stack& s, int nilai) {
-    return false;
+    Node *nodeBaru = new Node();
+    nodeBaru->data = nilai;
+
+    nodeBaru->next = s.top;
+    s.top = nodeBaru;
+
+    return true;
 }
 
 // SOAL 2
 bool pop(Stack& s, int& nilai) {
-    return false;
+    if (s.top == NULL) {
+        return false;
+    }
+    Node *hapus = s.top;
+    nilai = hapus->data;
+    s.top = s.top->next;
+
+    delete hapus;
+    return true;
+    
 }
 
 // SOAL 3
 void clear(Stack& s) {
+    Node *temp = s.top;
+
+    while (temp != NULL) {
+        Node *nodeNext = temp->next;
+        delete temp;
+        temp = nodeNext;
+    }
+    s.top = NULL;
 }
 
 // SOAL 4
 bool kurungSeimbang(const string& ekspresi) {
-    return false;
+    Stack s;
+    inisialisasi(s);
+
+    for (int i = 0; i < ekspresi.length(); i++){
+        char c = ekspresi[i];
+        if (c == '(' || c == '[' || c == '{') {
+            push(s, c);
+        } else if (c == ')' || c == ']' || c == '}') {
+            int nilaiPuncak;
+
+            bool berhasilAmbil = pop(s, nilaiPuncak);
+            if (berhasilAmbil == false) {
+                return false;
+            }
+
+            char buka = (char) nilaiPuncak;
+
+            if ((c == ')' && buka != '(') || (c == ']' && buka != '[') || (c == '}' && buka != '{')) {
+                clear(s); 
+                return false;
+            }
+        }
+    }
+    
+    bool seimbang = isEmpty(s);
+    clear(s); 
+    return seimbang;
 }
 
 // =============================================================================
